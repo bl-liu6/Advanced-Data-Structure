@@ -10,7 +10,7 @@ MY_INCLUDES = sorting.h
 
 
 CCX = g++
-CXXFLAGS = -g -std=c++14  -Wall
+CXXFLAGS = -g -std=c++1y  -Wall
 
 #============================================================
 all: $(TARGET)
