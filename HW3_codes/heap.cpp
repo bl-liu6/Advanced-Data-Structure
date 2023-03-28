@@ -129,26 +129,147 @@ int main(int argc, char *argv[])
 Provide funtions below
 ****************************************/
 
- void Heapify(int *Heap, int n)
- {
- }
-
- void  CheckHeapOrder(int *Heap,int n)
-  {
-
-  }
-
-int  DeleteHeap(int index,int *Heap,int ntemp)
-{
-  int save = Heap[index];
-
-  return  save;
+void Heapify(int *Heap, int n) {
+    // Starting from the last parent node and moving up the tree
+    for(int i = n/2 - 1; i >= 0; i--) {
+        int parent = i;
+        // Bubble down the current node until it satisfies the max-heap property
+        while(parent*2 + 1 < n) {
+            int left_child = parent*2 + 1;
+            int right_child = parent*2 + 2;
+            int max_child = left_child;
+            // Determine which child is larger
+            if(right_child < n && Heap[right_child] > Heap[left_child]) {
+                max_child = right_child;
+            }
+            // If the current node is smaller than the larger child, swap them and continue bubbling down
+            if(Heap[parent] < Heap[max_child]) {
+                std::swap(Heap[parent], Heap[max_child]);
+                parent = max_child;
+            } else {
+                break;
+            }
+        }
+    }
 }
-void InsertHeap(int value ,int *Heap, int ntemp)
-{
 
+
+void CheckHeapOrder(int *Heap, int n) {
+    // Starting from the root of the heap
+    for(int i = 0; i < n; i++) {
+        int left_child = 2*i + 1;
+        int right_child = 2*i + 2;
+        // If the left child is within the bounds of the heap and is greater than the parent, return false
+        if(left_child < n && Heap[left_child] > Heap[i]) {
+            std::cout << "Heap order violated at index " << i << std::endl;
+            return;
+        }
+        // If the right child is within the bounds of the heap and is greater than the parent, return false
+        if(right_child < n && Heap[right_child] > Heap[i]) {
+            std::cout << "Heap order violated at index " << i << std::endl;
+            return;
+        }
+    }
+    std::cout << "Heap order is valid" << std::endl;
 }
-void HeapSort(int *Heap, int n)
-{
 
+
+int DeleteHeap(int index, int *Heap, int ntemp) {
+    if(index < 0 || index >= ntemp) {
+        // Index is out of bounds, return -1 to indicate an error
+        return -1;
+    }
+    int save = Heap[index];
+    // Replace the deleted key with the last element in the heap
+    Heap[index] = Heap[ntemp-1];
+    ntemp--;
+    // Bubble down the new element to restore the max-heap property
+    int parent = index;
+    while(parent*2 + 1 < ntemp) {
+        int left_child = parent*2 + 1;
+        int right_child = parent*2 + 2;
+        int max_child = left_child;
+        // Determine which child is larger
+        if(right_child < ntemp && Heap[right_child] > Heap[left_child]) {
+            max_child = right_child;
+        }
+        // If the current node is smaller than the larger child, swap them and continue bubbling down
+        if(Heap[parent] < Heap[max_child]) {
+            std::swap(Heap[parent], Heap[max_child]);
+            parent = max_child;
+        } else {
+            break;
+        }
+    }
+    return save;
+}
+
+void InsertHeap(int value, int *Heap, int ntemp) {
+    // Add the new element to the end of the heap
+    Heap[ntemp] = value;
+    ntemp++;
+    // Bubble up the new element to restore the max-heap property
+    int child = ntemp - 1;
+    while(child > 0) {
+        int parent = (child - 1) / 2;
+        // If the current node is larger than its parent, swap them and continue bubbling up
+        if(Heap[child] > Heap[parent]) {
+            std::swap(Heap[child], Heap[parent]);
+            child = parent;
+        } else {
+            break;
+        }
+    }
+}
+
+void HeapSort(int *Heap, int n) {
+    // Build a max-heap from the array
+    for(int i = n/2 - 1; i >= 0; i--) {
+        // Perform heapify on each non-leaf node
+        int parent = i;
+        while(parent*2 + 1 < n) {
+            int left_child = parent*2 + 1;
+            int right_child = parent*2 + 2;
+            int max_child = left_child;
+            // Determine which child is larger
+            if(right_child < n && Heap[right_child] > Heap[left_child]) {
+                max_child = right_child;
+            }
+            // If the current node is smaller than the larger child, swap them and continue bubbling down
+            if(Heap[parent] < Heap[max_child]) {
+                std::swap(Heap[parent], Heap[max_child]);
+                parent = max_child;
+            } else {
+                break;
+            }
+        }
+    }
+    // Sort the array by repeatedly extracting the max element from the heap
+    for(int i = n-1; i >= 0; i--) {
+        std::swap(Heap[0], Heap[i]);
+        int parent = 0;
+        // Bubble down the new root to restore the max-heap property
+        while(parent*2 + 1 < i) {
+            int left_child = parent*2 + 1;
+            int right_child = parent*2 + 2;
+            int max_child = left_child;
+            // Determine which child is larger
+            if(right_child < i && Heap[right_child] > Heap[left_child]) {
+                max_child = right_child;
+            }
+            // If the current node is smaller than the larger child, swap them and continue bubbling down
+            if(Heap[parent] < Heap[max_child]) {
+                std::swap(Heap[parent], Heap[max_child]);
+                parent = max_child;
+            } else {
+                break;
+            }
+        }
+    }
+    // Print the sorted array
+    std::cout << "Sorted array: ";
+    for(int i = 0; i < n; i++) {
+        std::cout << Heap[i] << " ";
+    }
+    std::cout << std::endl;
 }
